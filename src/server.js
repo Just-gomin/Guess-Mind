@@ -26,6 +26,16 @@ app.get("/", (req, res) => {
 const handleListening = () =>
   console.log(`✅Server Running : http://localhost:${PORT}`);
 
+// HTTP 서버로 PORT에서 수신
 const server = app.listen(PORT, handleListening);
 
-const io = socketIO(server);
+// We Socket으로 HTTP의 서버와 같은 PORT에서 수신
+const io = socketIO.listen(server);
+
+let sockets = [];
+
+io.on("connection", (socket) => {
+  sockets.push(socket.id);
+}); // Connection 이벤트 발생시 처리
+
+setInterval(() => console.log(sockets), 1000);
