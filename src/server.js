@@ -29,13 +29,11 @@ const handleListening = () =>
 // HTTP 서버로 PORT에서 수신
 const server = app.listen(PORT, handleListening);
 
-// We Socket으로 HTTP의 서버와 같은 PORT에서 수신
+// We Socket으로 HTTP의 서버와 같은 PORT에서 수신, soxket server의 변수
 const io = socketIO.listen(server);
 
-let sockets = [];
-
 io.on("connection", (socket) => {
-  sockets.push(socket.id);
-}); // Connection 이벤트 발생시 처리
+  socket.broadcast.emit("hello"); // hello event 생성
 
-setInterval(() => console.log(sockets), 1000);
+  socket.on("helloGuys", () => console.log("The Client said hello"));
+}); // Connection(Client가 접속한 경우) 이벤트 발생시 처리
