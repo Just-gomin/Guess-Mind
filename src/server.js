@@ -6,6 +6,7 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
+import socketio from "socket.io";
 
 const PORT = 4000;
 const app = express();
