@@ -33,7 +33,13 @@ const server = app.listen(PORT, handleListening);
 const io = socketIO.listen(server);
 
 io.on("connection", (socket) => {
-  socket.broadcast.emit("hello"); // hello event 생성
-
-  socket.on("helloGuys", () => console.log("The Client said hello"));
+  socket.on("newMessage", ({ message }) => {
+    socket.broadcast.emit("messageNotif", {
+      message,
+      nickname: socket.nickname,
+    });
+  });
+  socket.on("setNickname", ({ nickname }) => {
+    socket.nickname = nickname;
+  });
 }); // Connection(Client가 접속한 경우) 이벤트 발생시 처리
