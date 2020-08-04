@@ -4,6 +4,7 @@ import autoprefixer from "gulp-autoprefixer";
 import minifyCSS from "gulp-csso";
 import del from "del";
 import browserify from "gulp-browserify";
+import babelify from "babelify";
 
 sass.compiler = require("node-sass");
 
@@ -39,7 +40,14 @@ const styles = () =>
 
 // js 파일들의 번역 설정
 const js = () =>
-  gulp.src(paths.js.src).pipe(browserify()).pipe(gulp.dest(paths.js.dest));
+  gulp
+    .src(paths.js.src)
+    .pipe(
+      browserify({
+        transform: [babelify.configure({ presets: ["@babel/preset-env"] })],
+      })
+    )
+    .pipe(gulp.dest(paths.js.dest));
 
 // 파일들의 변화를 바로 감지하도록 하는 task.
 const watchFiles = () => {
@@ -47,6 +55,8 @@ const watchFiles = () => {
   gulp.watch(paths.js.watch, js);
 };
 
-const dev = gulp.series([clean, styles, js, watchFiles]);
+const dev = gulp.series(clean, styles, js, watchFiles);
+
+const build = gulp.series(clean, styles, js);
 
 export default dev;
