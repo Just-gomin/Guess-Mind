@@ -17,8 +17,8 @@ const nickname = localStorage.getItem(NICKNAME);
 
 const logIn = (nickname) => {
   // eslint-disable-next-line no-undef
-  const socket = io("/"); // Socket 연결 처리
-  socket.emit("setNickname", { nickname });
+  window.socket = io("/"); // Socket 연결 처리
+  window.socket.emit(window.events.setNickname, { nickname });
 };
 
 if (nickname === null) {
