@@ -1,17 +1,26 @@
-import { handleMessageNotif } from "./chat";
+const body = document.querySelector("body");
+const loginForm = document.getElementById("jsLogin");
 
-// eslint-disable-next-line no-undef
-const socket = io("/");
+const NICKNAME = "nickname";
+const LOGGED_OUT = "loggedOut";
+const LOGGED_IN = "loggedIn";
 
-// eslint-disable-next-line no-unused-vars
-function sendMessage(message) {
-  socket.emit("newMessage", { message });
-  console.log(`You: ${message}`);
+const nickname = localStorage.getItem(NICKNAME);
+
+if (nickname === null) {
+  body.classList = LOGGED_OUT;
+} else {
+  body.classList = LOGGED_IN;
 }
 
-// eslint-disable-next-line no-unused-vars
-function setNickname(nickname) {
-  socket.emit("setNickname", { nickname });
-}
+const handleFormSubmit = (e) => {
+  e.preventDefault();
+  const input = loginForm.querySelector("input");
+  const { value } = input;
+  localStorage.setItem(NICKNAME, value);
+  input.value = "";
+};
 
-socket.on("messageNotif", handleMessageNotif);
+if (loginForm) {
+  loginForm.addEventListener("submit", handleFormSubmit);
+}
