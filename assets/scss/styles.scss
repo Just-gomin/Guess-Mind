@@ -39,3 +39,24 @@ body {
     }
   }
 }
+
+.loginBox {
+  form {
+    padding: 20px 40px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: $box-shadow;
+    input {
+      border: none;
+      border-bottom: 2px solid black;
+      outline: none;
+      font-size: 16px;
+      &:focus {
+        border-bottom: 2px solid $comfort-blue;
+        &::placeholder {
+          color: transparent;
+        }
+      }
+    }
+  }
+}
