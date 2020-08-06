@@ -1,16 +1,17 @@
 /*
   알람 동작에 대한 파일입니다.
 */
-const notifications = document.getElementById("jsNotifications");
+const body = document.querySelector("body");
 
 const STATUS_GOOD = "good";
 const STATUS_BAD = "bad";
 const COLOR_GOOD = "#396ec4";
-const COLOR_BAD = "#c43957";
+const COLOR_BAD = "#f39c12";
 
 const fireNotification = (text, status) => {
   const notification = document.createElement("div");
 
+  notification.classList.add("notification");
   notification.innerText = text;
 
   if (status === STATUS_GOOD) {
@@ -19,14 +20,14 @@ const fireNotification = (text, status) => {
     notification.style.backgroundColor = COLOR_BAD;
   }
 
-  notifications.appendChild(notification);
+  body.appendChild(notification);
 };
 
 export const handleNewUser = ({ nickname }) => {
   console.log(nickname);
-  fireNotification(`"${nickname}" just joined!`, STATUS_GOOD);
+  fireNotification(`"${nickname}" 님이\n참가하셨습니다!`, STATUS_GOOD);
 };
 
 export const handleDisconnected = ({ nickname }) => {
-  fireNotification(`"${nickname}" just left!`, STATUS_BAD);
+  fireNotification(`"${nickname}" 님이\n나가셨습니다!`, STATUS_BAD);
 };
