@@ -1,4 +1,8 @@
-import { handleNewUser } from "./notifications";
+/*
+    Client Side Socket Controller.
+*/
+
+import { handleNewUser, handleDisconnected } from "./notifications";
 
 let socket = null;
 
@@ -12,4 +16,5 @@ export const initSockets = (newSocket) => {
   const { events } = window;
   updateSocket(newSocket);
   socket.on(events.newUser, handleNewUser);
+  socket.on(events.disconnected, handleDisconnected);
 };

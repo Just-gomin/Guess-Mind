@@ -1,6 +1,8 @@
 /*
     Login Flow.
 
+    Client Side의 Socket 진입점.
+
     1. 사용자 이름 기입
     2. Socket 연결
 
