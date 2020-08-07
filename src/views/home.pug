@@ -8,9 +8,12 @@ html(lang="en")
     body
         .loginBox
             form(action="")#jsLogin
-                input(placeholder="Whats your nickname?",type="text")
+                input(placeholder="Nickname을 입력해주세요!",type="text")
         .gameContainer#jsGame
-            h1 You are logged in.
+            .chat
+                ul.chat__messages#jsMessages
+                form.chat__form#jsSendMessage
+                    input(placeholder="메세지 보내기.")
         script.
             window.events= !{events}
         script(src="/socket.io/socket.io.js")

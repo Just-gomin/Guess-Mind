@@ -1,0 +1,14 @@
+.loginBox {
+  form {
+    padding: 40px 60px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: $box-shadow;
+    input {
+      border-bottom: 2px solid black;
+      &:focus {
+        border-bottom: 2px solid $comfort-blue;
+      }
+    }
+  }
+}

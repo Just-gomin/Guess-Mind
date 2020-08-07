@@ -1,5 +1,7 @@
 /*
     Client Side Socket Controller.
+
+    1. 알림동작 (notifications.js)
 */
 
 import { handleNewUser, handleDisconnected } from "./notifications";
