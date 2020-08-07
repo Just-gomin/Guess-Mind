@@ -1,11 +1,12 @@
 .chat {
+  min-width: 180px;
   .chat__messages {
     width: 100%;
     padding: 10px 10px;
     overflow: auto;
     overflow-x: hidden;
     background-color: white;
-    height: 50vh;
+    height: 70vh;
     border-radius: 10px;
     box-shadow: 0 3px 36px rgba(23, 55, 87, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
     li {
@@ -40,21 +41,20 @@
       }
     }
   }
-}
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
 
-::-webkit-scrollbar {
-  width: 10px;
-}
+  ::-webkit-scrollbar-track {
+    background: white;
+    border-radius: 10px;
+  }
 
-::-webkit-scrollbar-track {
-  background: white;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
-  &:hover {
-    background: #555;
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    &:hover {
+      background: #555;
+    }
   }
 }

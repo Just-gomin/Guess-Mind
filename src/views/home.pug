@@ -10,6 +10,25 @@ html(lang="en")
             form(action="")#jsLogin
                 input(placeholder="Nickname을 입력해주세요!",type="text")
         .gameContainer#jsGame
+            .main
+                canvas.canvas#jsCanvas
+                .controls
+                    .controls__brushSize
+                        input(type="range",name="brushSize",id="jsBrushSize",min="0.1",max="5.0",value="2.5",step="0.1")
+                        .brushSizeText#jsBrushSizeText 2.5
+                    .controls__btns
+                        button#jsMode Fill
+                        button#jsInitialize Initialize
+                    .controls__colors#jsColors
+                        .controls__color.jsColor(style="background-color:#000000;")
+                        .controls__color.jsColor(style="background-color:#ffffff;")
+                        .controls__color.jsColor(style="background-color:#e30e0e;")
+                        .controls__color.jsColor(style="background-color:#f39c12;")
+                        .controls__color.jsColor(style="background-color:#f1c40f;")
+                        .controls__color.jsColor(style="background-color:#27ae60;")
+                        .controls__color.jsColor(style="background-color:#2980b9;")
+                        .controls__color.jsColor(style="background-color:#2c0c94;")
+                        .controls__color.jsColor(style="background-color:#8e44ad;")
             .chat
                 ul.chat__messages#jsMessages
                 form.chat__form#jsSendMessage
