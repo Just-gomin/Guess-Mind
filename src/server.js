@@ -34,4 +34,4 @@ const server = app.listen(PORT, handleListening);
 // We Socket으로 HTTP의 서버와 같은 PORT에서 수신, soxket server의 변수
 const io = socketIO.listen(server);
 
-io.on("connection", (socket) => socketController(socket)); // Connection(Client가 접속한 경우) 이벤트 발생시 처리
+io.on("connection", (socket) => socketController(socket, io)); // Connection(Client가 접속한 경우) 이벤트 발생시 처리

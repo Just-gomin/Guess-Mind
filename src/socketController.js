@@ -4,18 +4,25 @@
 
 import events from "./events";
 
-const socketController = (socket) => {
-  const broadcast = (event, data) => {
-    socket.broadcast.emit(event, data);
-  };
+let sockets = [];
+
+const socketController = (socket, io) => {
+  const broadcast = (event, data) => socket.broadcast.emit(event, data); // Socket이 자기 자신을 제외한 전역에 이벤트 전달.
+  const superBroadcast = (event, data) => io.emit(event, data); // server에서 연결된 socket들에게 전역으로 이벤트 전달.
+  const sendPlayerUpdate = () =>
+    superBroadcast(events.playerUpdate, { sockets });
 
   socket.on(events.setNickname, ({ nickname }) => {
     socket.nickname = nickname;
+    sockets.push({ id: socket.id, nickname: socket.nickname, points: 0 });
     broadcast(events.newUser, { nickname });
+    sendPlayerUpdate();
   });
 
   socket.on(events.disconnect, () => {
+    sockets = sockets.filter((tempSocket) => tempSocket.id !== socket.id); // 연결이 끊긴 socket의 id와 다른 것들만 반환합니다.
     broadcast(events.disconnected, { nickname: socket.nickname });
+    sendPlayerUpdate();
   });
 
   socket.on(events.sendMsg, ({ message }) =>

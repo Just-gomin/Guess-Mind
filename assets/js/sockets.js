@@ -2,11 +2,15 @@
     Client Side Socket Controller.
 
     1. 알림동작 (notifications.js)
+    2. 채팅 동작 (chat.js)
+    3. 실시간 그림그리기 및 캔버스 채우기 (game.js)
+    4. 게임 참여자 정보 갱신 (player.js)
 */
 
 import { handleNewUser, handleDisconnected } from "./notifications";
 import { handleNewMsg } from "./chat";
 import { handleBeganPath, handleStrokedPath, handleFilled } from "./game";
+import { handlePlayerUpdate } from "./player";
 
 let socket = null;
 
@@ -21,4 +25,5 @@ export const initSockets = (newSocket) => {
   socket.on(events.beganPath, handleBeganPath);
   socket.on(events.strokedPath, handleStrokedPath);
   socket.on(events.filled, handleFilled);
+  socket.on(events.playerUpdate, handlePlayerUpdate);
 };

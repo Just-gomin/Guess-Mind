@@ -24,7 +24,6 @@ const fireNotification = (text, status) => {
 };
 
 export const handleNewUser = ({ nickname }) => {
-  console.log(nickname);
   fireNotification(`"${nickname}" 님이\n참가하셨습니다!`, STATUS_GOOD);
 };
 
