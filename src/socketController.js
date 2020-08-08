@@ -33,8 +33,8 @@ const socketController = (socket, io) => {
     broadcast(events.beganPath, { x, y })
   );
 
-  socket.on(events.strokePath, ({ x, y, color }) =>
-    broadcast(events.strokedPath, { x, y, color })
+  socket.on(events.strokePath, ({ x, y, color, brushSize }) =>
+    broadcast(events.strokedPath, { x, y, color, brushSize })
   );
 
   socket.on(events.fill, ({ color }) => broadcast(events.filled, { color }));

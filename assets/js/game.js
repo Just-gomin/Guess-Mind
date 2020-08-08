@@ -13,6 +13,7 @@ const initializeBtn = document.getElementById("jsInitialize");
 const colors = document.getElementsByClassName("jsColor");
 
 const INITIAL_COLOR = "black";
+const INITIAL_BRUSH_SIZE = 2.5;
 const CANVAS_SIZE = 550;
 
 // Default Values
@@ -24,7 +25,7 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 ctx.strokeStyle = INITIAL_COLOR;
 ctx.fillStyle = INITIAL_COLOR;
-ctx.lineWidth = 2.5;
+ctx.lineWidth = INITIAL_BRUSH_SIZE;
 
 let isPainting = false;
 let isFilling = false;
@@ -43,14 +44,19 @@ const beginPath = (x, y) => {
   ctx.moveTo(x, y);
 };
 
-const strokePath = (x, y, color = null) => {
+const strokePath = (x, y, color = null, brushSize = null) => {
   let currentColor = ctx.strokeStyle;
+  let currentBrushSize = ctx.lineWidth;
   if (color !== null) {
     ctx.strokeStyle = color;
+  }
+  if (brushSize !== null) {
+    ctx.lineWidth = brushSize;
   }
   ctx.lineTo(x, y);
   ctx.stroke();
   ctx.strokeStyle = currentColor;
+  ctx.lineWidth = currentBrushSize;
 };
 
 const onMouseMove = (event) => {
@@ -65,6 +71,7 @@ const onMouseMove = (event) => {
       x,
       y,
       color: ctx.strokeStyle,
+      brushSize: ctx.lineWidth,
     });
   }
 };
@@ -147,5 +154,6 @@ if (initializeBtn) {
 }
 
 export const handleBeganPath = ({ x, y }) => beginPath(x, y);
-export const handleStrokedPath = ({ x, y, color }) => strokePath(x, y, color);
+export const handleStrokedPath = ({ x, y, color, brushSize }) =>
+  strokePath(x, y, color, brushSize);
 export const handleFilled = ({ color }) => fillCanvas(color);
