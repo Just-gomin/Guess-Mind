@@ -14,7 +14,7 @@ const colors = document.getElementsByClassName("jsColor");
 
 const INITIAL_COLOR = "black";
 const INITIAL_BRUSH_SIZE = 2.5;
-const CANVAS_SIZE = 550;
+const CANVAS_SIZE = 600;
 
 // Default Values
 canvas.width = CANVAS_SIZE;

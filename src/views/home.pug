@@ -33,6 +33,11 @@ html(lang="en")
                 ul.chat__messages#jsMessages
                 form.chat__form#jsSendMessage
                     input(placeholder="메세지 보내기.")
+            .player__board
+                table.board__table#jsPlayerTable
+                    tr.table__header
+                        th Nickname
+                        th Score
         script.
             window.events= !{events}
         script(src="/socket.io/socket.io.js")
