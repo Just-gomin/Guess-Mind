@@ -3,14 +3,26 @@
 */
 
 import events from "./events";
+import { chooseWord } from "./words";
 
 let sockets = [];
+let inprogress = false;
+let word = null;
+
+const choosePainter = () => sockets[Math.floor(Math.random() * sockets.length)];
 
 const socketController = (socket, io) => {
   const broadcast = (event, data) => socket.broadcast.emit(event, data); // Socket이 자기 자신을 제외한 전역에 이벤트 전달.
   const superBroadcast = (event, data) => io.emit(event, data); // server에서 연결된 socket들에게 전역으로 이벤트 전달.
   const sendPlayerUpdate = () =>
     superBroadcast(events.playerUpdate, { sockets });
+  const startGame = () => {
+    if (inprogress === false) {
+      inprogress = true;
+      const painter = choosePainter();
+      word = chooseWord();
+    }
+  };
 
   socket.on(events.setNickname, ({ nickname }) => {
     socket.nickname = nickname;
