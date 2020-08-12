@@ -124,9 +124,14 @@ const handleModeClick = () => {
   }
 };
 
-const handleInitializeClick = () => {
+export const initializeCanvas = () => {
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+};
+
+const handleInitializeClick = () => {
+  initializeCanvas();
+  getSocket().emit(window.events.initialize);
 };
 
 Array.from(colors).forEach((color) =>
@@ -149,6 +154,7 @@ export const handleBeganPath = ({ x, y }) => beginPath(x, y);
 export const handleStrokedPath = ({ x, y, color, brushSize }) =>
   strokePath(x, y, color, brushSize);
 export const handleFilled = ({ color }) => fillCanvas(color);
+export const handleInitialized = () => initializeCanvas();
 
 export const disableCanvas = () => {
   canvas.removeEventListener("mousemove", onMouseMove);

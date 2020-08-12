@@ -8,6 +8,7 @@ import { chooseWord } from "./words";
 let sockets = [];
 let inprogress = false;
 let word = null;
+let painter = null;
 
 const choosePainter = () => sockets[Math.floor(Math.random() * sockets.length)];
 
@@ -19,14 +20,19 @@ const socketController = (socket, io) => {
   const startGame = () => {
     if (inprogress === false) {
       inprogress = true;
-      const painter = choosePainter();
+      painter = choosePainter();
       word = chooseWord();
-      io.to(painter).emit(events.painterNotif, { word });
-      superBroadcast(events.gameStarted);
+      setTimeout(() => {
+        superBroadcast(events.gameStarted);
+      }, 2000);
+      setTimeout(() => {
+        io.to(painter.id).emit(events.painterNotif, { word });
+      }, 3000);
     }
   };
   const endGame = () => {
     inprogress = false;
+    superBroadcast(events.gameEnded);
   };
 
   socket.on(events.setNickname, ({ nickname }) => {
@@ -34,14 +40,17 @@ const socketController = (socket, io) => {
     sockets.push({ id: socket.id, nickname: socket.nickname, points: 0 });
     broadcast(events.newUser, { nickname });
     sendPlayerUpdate();
-    if (sockets.length === 1) {
+    if (sockets.length >= 2) {
       startGame();
     }
   });
 
   socket.on(events.disconnect, () => {
     sockets = sockets.filter((tempSocket) => tempSocket.id !== socket.id); // 연결이 끊긴 socket의 id와 다른 것들만 반환합니다.
-    if (sockets.length === 1) {
+    if (
+      sockets.length === 1 ||
+      (painter !== null && socket.id === painter.id)
+    ) {
       endGame();
     }
     broadcast(events.disconnected, { nickname: socket.nickname });
@@ -61,6 +70,8 @@ const socketController = (socket, io) => {
   );
 
   socket.on(events.fill, ({ color }) => broadcast(events.filled, { color }));
+
+  socket.on(events.initialize, () => broadcast(events.initialized));
 };
 
 export default socketController;
