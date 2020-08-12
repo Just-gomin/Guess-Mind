@@ -1,3 +1,5 @@
+import { disableCanvas, hideControls } from "./game";
+
 const playerTable = document.getElementById("jsPlayerTable");
 
 const addPlayers = (players) => {
@@ -19,3 +21,7 @@ const addPlayers = (players) => {
   });
 };
 export const handlePlayerUpdate = ({ sockets }) => addPlayers(sockets);
+export const handleGameStarted = () => {
+  disableCanvas();
+  hideControls();
+};

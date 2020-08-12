@@ -21,7 +21,12 @@ const socketController = (socket, io) => {
       inprogress = true;
       const painter = choosePainter();
       word = chooseWord();
+      io.to(painter).emit(events.painterNotif, { word });
+      superBroadcast(events.gameStarted);
     }
+  };
+  const endGame = () => {
+    inprogress = false;
   };
 
   socket.on(events.setNickname, ({ nickname }) => {
@@ -29,10 +34,16 @@ const socketController = (socket, io) => {
     sockets.push({ id: socket.id, nickname: socket.nickname, points: 0 });
     broadcast(events.newUser, { nickname });
     sendPlayerUpdate();
+    if (sockets.length === 1) {
+      startGame();
+    }
   });
 
   socket.on(events.disconnect, () => {
     sockets = sockets.filter((tempSocket) => tempSocket.id !== socket.id); // 연결이 끊긴 socket의 id와 다른 것들만 반환합니다.
+    if (sockets.length === 1) {
+      endGame();
+    }
     broadcast(events.disconnected, { nickname: socket.nickname });
     sendPlayerUpdate();
   });

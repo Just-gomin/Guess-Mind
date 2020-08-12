@@ -4,6 +4,8 @@ import { getSocket } from "./sockets";
 const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext("2d");
 
+const controls = document.getElementById("jsControls");
+
 const brushSizeInput = document.getElementById("jsBrushSize");
 const brushSizeText = document.getElementById("jsBrushSizeText");
 
@@ -127,16 +129,6 @@ const handleInitializeClick = () => {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 };
 
-// Event Listeners
-if (canvas) {
-  canvas.addEventListener("mousemove", onMouseMove);
-  canvas.addEventListener("mousedown", startPainting);
-  canvas.addEventListener("mouseup", stopPainting);
-  canvas.addEventListener("mouseleave", stopPainting);
-  canvas.addEventListener("click", handleCanvasClick);
-  canvas.addEventListener("contextmenu", handleRightClick);
-}
-
 Array.from(colors).forEach((color) =>
   color.addEventListener("click", handleColorClick)
 );
@@ -157,3 +149,33 @@ export const handleBeganPath = ({ x, y }) => beginPath(x, y);
 export const handleStrokedPath = ({ x, y, color, brushSize }) =>
   strokePath(x, y, color, brushSize);
 export const handleFilled = ({ color }) => fillCanvas(color);
+
+export const disableCanvas = () => {
+  canvas.removeEventListener("mousemove", onMouseMove);
+  canvas.removeEventListener("mousedown", startPainting);
+  canvas.removeEventListener("mouseup", stopPainting);
+  canvas.removeEventListener("mouseleave", stopPainting);
+  canvas.removeEventListener("click", handleCanvasClick);
+};
+
+export const enableCanvas = () => {
+  canvas.addEventListener("mousemove", onMouseMove);
+  canvas.addEventListener("mousedown", startPainting);
+  canvas.addEventListener("mouseup", stopPainting);
+  canvas.addEventListener("mouseleave", stopPainting);
+  canvas.addEventListener("click", handleCanvasClick);
+};
+
+export const hideControls = () => {
+  controls.style.opacity = 0;
+};
+
+export const showControls = () => {
+  controls.style.opacity = 1;
+};
+
+// Event Listeners
+if (canvas) {
+  enableCanvas();
+  canvas.addEventListener("contextmenu", handleRightClick);
+}
