@@ -1,10 +1,5 @@
 /*
     Client Side Socket Controller.
-
-    1. 알림동작 (notifications.js)
-    2. 채팅 동작 (chat.js)
-    3. 실시간 그림그리기 및 캔버스 채우기 (game.js)
-    4. 게임 참여자 정보 갱신 (player.js)
 */
 
 import { handleNewUser, handleDisconnected } from "./notifications";
@@ -23,23 +18,26 @@ import {
   handleGameStarting,
 } from "./player";
 
+// 접속한 socket 객체를 담을 변수
 let socket = null;
 
+// 외부 파일에서 socket 객체를 사용할 수 있도록 하는 함수.
 export const getSocket = () => socket;
 
+// Socket의 Event 수신 처리
 export const initSockets = (newSocket) => {
   const { events } = window;
   socket = newSocket;
-  socket.on(events.newUser, handleNewUser);
-  socket.on(events.disconnected, handleDisconnected);
-  socket.on(events.newMsg, handleNewMsg);
-  socket.on(events.beganPath, handleBeganPath);
-  socket.on(events.strokedPath, handleStrokedPath);
-  socket.on(events.filled, handleFilled);
-  socket.on(events.initialized, handleInitialized);
-  socket.on(events.playerUpdate, handlePlayerUpdate);
-  socket.on(events.gameStarted, handleGameStarted);
-  socket.on(events.painterNotif, handlePainterNotif);
-  socket.on(events.gameEnded, handleGameEnded);
-  socket.on(events.gameStarting, handleGameStarting);
+  socket.on(events.newUser, handleNewUser); // 새로운 게임 참여자 등장 알림
+  socket.on(events.disconnected, handleDisconnected); // 게임 참여자 퇴장 알림
+  socket.on(events.newMsg, handleNewMsg); // Painter를 제외한 유저들의 채팅
+  socket.on(events.beganPath, handleBeganPath); // Painter가 Canvas에 Path 생성
+  socket.on(events.strokedPath, handleStrokedPath); // 생성된 Path에 Painter가 정한 색상과 붓 크기로 그림
+  socket.on(events.filled, handleFilled); // Canvas를 특정 색으로 채움
+  socket.on(events.initialized, handleInitialized); // Canvas를 초기화
+  socket.on(events.playerUpdate, handlePlayerUpdate); // 게임 참여자 정보 갱신
+  socket.on(events.gameStarting, handleGameStarting); // 게임 시작 준비
+  socket.on(events.gameStarted, handleGameStarted); // 게임 시작
+  socket.on(events.painterNotif, handlePainterNotif); // Painter로 지정된 사용자에게 단어 전달 및 Paint 기능 활성화
+  socket.on(events.gameEnded, handleGameEnded); // 게임 종료
 };
