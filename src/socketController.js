@@ -9,6 +9,7 @@ let sockets = [];
 let inprogress = false;
 let word = null;
 let painter = null;
+let timeout = null;
 
 const choosePainter = () => sockets[Math.floor(Math.random() * sockets.length)];
 
@@ -18,22 +19,29 @@ const socketController = (socket, io) => {
   const sendPlayerUpdate = () =>
     superBroadcast(events.playerUpdate, { sockets }); // Player가 추가될 때 event 전달.
   const startGame = () => {
-    if (inprogress === false) {
-      inprogress = true;
-      painter = choosePainter();
-      word = chooseWord();
-      superBroadcast(events.gameStarting);
-      setTimeout(() => {
-        superBroadcast(events.gameStarted);
-      }, 3000);
-      setTimeout(() => {
-        io.to(painter.id).emit(events.painterNotif, { word });
-      }, 4000);
+    if (sockets.length > 1) {
+      if (inprogress === false) {
+        inprogress = true;
+        painter = choosePainter();
+        word = chooseWord();
+        superBroadcast(events.gameStarting);
+        setTimeout(() => {
+          superBroadcast(events.gameStarted);
+        }, 3000);
+        setTimeout(() => {
+          io.to(painter.id).emit(events.painterNotif, { word });
+          timeout = setTimeout(() => endGame(), 60000);
+        }, 4000);
+      }
     }
   };
   const endGame = () => {
     inprogress = false;
     superBroadcast(events.gameEnded);
+    if (timeout !== null) {
+      clearTimeout(timeout);
+    }
+    setTimeout(() => startGame(), 2000);
   };
 
   const addPoints = (id) => {
@@ -45,6 +53,7 @@ const socketController = (socket, io) => {
     });
     sendPlayerUpdate();
     endGame();
+    clearTimeout(timeout);
   };
 
   socket.on(events.setNickname, ({ nickname }) => {
@@ -52,9 +61,7 @@ const socketController = (socket, io) => {
     sockets.push({ id: socket.id, nickname: socket.nickname, points: 0 });
     broadcast(events.newUser, { nickname });
     sendPlayerUpdate();
-    if (sockets.length >= 2) {
-      startGame();
-    }
+    startGame();
   });
 
   socket.on(events.disconnect, () => {
