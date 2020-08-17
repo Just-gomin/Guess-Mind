@@ -16,23 +16,35 @@ const socketController = (socket, io) => {
   const broadcast = (event, data) => socket.broadcast.emit(event, data); // Socket이 자기 자신을 제외한 전역에 이벤트 전달.
   const superBroadcast = (event, data) => io.emit(event, data); // server에서 연결된 socket들에게 전역으로 이벤트 전달.
   const sendPlayerUpdate = () =>
-    superBroadcast(events.playerUpdate, { sockets });
+    superBroadcast(events.playerUpdate, { sockets }); // Player가 추가될 때 event 전달.
   const startGame = () => {
     if (inprogress === false) {
       inprogress = true;
       painter = choosePainter();
       word = chooseWord();
+      superBroadcast(events.gameStarting);
       setTimeout(() => {
         superBroadcast(events.gameStarted);
-      }, 2000);
+      }, 3000);
       setTimeout(() => {
         io.to(painter.id).emit(events.painterNotif, { word });
-      }, 3000);
+      }, 4000);
     }
   };
   const endGame = () => {
     inprogress = false;
     superBroadcast(events.gameEnded);
+  };
+
+  const addPoints = (id) => {
+    sockets = sockets.map((socket) => {
+      if (socket.id === id) {
+        socket.points += 10;
+      }
+      return socket;
+    });
+    sendPlayerUpdate();
+    endGame();
   };
 
   socket.on(events.setNickname, ({ nickname }) => {
@@ -57,9 +69,17 @@ const socketController = (socket, io) => {
     sendPlayerUpdate();
   });
 
-  socket.on(events.sendMsg, ({ message }) =>
-    broadcast(events.newMsg, { message, nickname: socket.nickname })
-  );
+  socket.on(events.sendMsg, ({ message }) => {
+    if (message === word) {
+      superBroadcast(events.newMsg, {
+        message: `"${socket.nickname}"님이 "${word}"를 맞추셨습니다.`,
+        nickname: "Bot",
+      });
+      addPoints(socket.id);
+    } else {
+      broadcast(events.newMsg, { message, nickname: socket.nickname });
+    }
+  });
 
   socket.on(events.beginPath, ({ x, y }) =>
     broadcast(events.beganPath, { x, y })

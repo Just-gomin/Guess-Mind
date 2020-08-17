@@ -5,6 +5,7 @@ import {
   showControls,
   initializeCanvas,
 } from "./game";
+import { disableChat } from "./chat";
 
 const playerTable = document.getElementById("jsPlayerTable");
 const notifs = document.getElementById("jsNotifs");
@@ -43,7 +44,7 @@ export const handleGameStarted = () => {
 export const handlePainterNotif = ({ word }) => {
   enableCanvas();
   showControls();
-  console.log("제시어:", word);
+  disableChat();
   setNotifs("");
   setNotifs(`"${word}"에 대해 그려주세요!`);
 };
@@ -53,3 +54,5 @@ export const handleGameEnded = () => {
   disableCanvas();
   hideControls();
 };
+
+export const handleGameStarting = () => setNotifs("게임이 곧 시작됩니다.");
