@@ -7,16 +7,14 @@ import { handleNewMsg } from "./chat";
 import {
   handleBeganPath,
   handleStrokedPath,
-  handleFilled,
-  handleInitialized,
-} from "./game";
-import {
-  handlePlayerUpdate,
+  handleCanvasFilled,
+  handleCanvasInitialized,
   handleGameStarted,
   handlePainterNotif,
   handleGameEnded,
   handleGameStarting,
-} from "./player";
+} from "./game";
+import { handlePlayerUpdate } from "./player";
 
 // 접속한 socket 객체를 담을 변수
 let socket = null;
@@ -33,8 +31,8 @@ export const initSockets = (newSocket) => {
   socket.on(events.newMsg, handleNewMsg); // Painter를 제외한 유저들의 채팅
   socket.on(events.beganPath, handleBeganPath); // Painter가 Canvas에 Path 생성
   socket.on(events.strokedPath, handleStrokedPath); // 생성된 Path에 Painter가 정한 색상과 붓 크기로 그림
-  socket.on(events.filled, handleFilled); // Canvas를 특정 색으로 채움
-  socket.on(events.initialized, handleInitialized); // Canvas를 초기화
+  socket.on(events.filled, handleCanvasFilled); // Canvas를 특정 색으로 채움
+  socket.on(events.initialized, handleCanvasInitialized); // Canvas를 초기화
   socket.on(events.playerUpdate, handlePlayerUpdate); // 게임 참여자 정보 갱신
   socket.on(events.gameStarting, handleGameStarting); // 게임 시작 준비
   socket.on(events.gameStarted, handleGameStarted); // 게임 시작

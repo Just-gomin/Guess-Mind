@@ -8,20 +8,18 @@ const body = document.querySelector("body");
 // constant variables
 const STATUS_GOOD = "good";
 const STATUS_BAD = "bad";
-const COLOR_GOOD = "#396ec4";
-const COLOR_BAD = "#f39c12";
 
 // 화면에 알림을 띄우는 함수입니다.
 const fireNotification = (text, status) => {
   const notification = document.createElement("div");
 
-  notification.classList.add("notification");
+  notification.classList.add("popUpNoti");
   notification.innerText = text;
 
   if (status === STATUS_GOOD) {
-    notification.style.backgroundColor = COLOR_GOOD;
+    notification.classList.add("popUpNoti__good");
   } else if (status === STATUS_BAD) {
-    notification.style.backgroundColor = COLOR_BAD;
+    notification.classList.add("popUpNoti__bad");
   }
 
   body.appendChild(notification);

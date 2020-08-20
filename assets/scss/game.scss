@@ -9,6 +9,25 @@
     justify-content: center;
     justify-items: center;
     align-items: center;
+    .notifs__container {
+      display: flex;
+      margin-bottom: 5px;
+      justify-content: space-between;
+      .notifs__contents {
+        padding: 5px 10px;
+        border-radius: 10px;
+        color: white;
+        font-size: 16px;
+        &.notifs__word {
+          background-color: $notif-word;
+          border: 2px solid $notif-border-word;
+        }
+        &.notifs__timer {
+          background-color: $notif-timer;
+          border: 2px solid $notif-border-timer;
+        }
+      }
+    }
     .canvas {
       min-width: 600px;
       height: 600px;

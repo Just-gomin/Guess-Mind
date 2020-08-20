@@ -1,6 +1,10 @@
 import { getSocket } from "./sockets";
+import { disableChat, enableChat } from "./chat";
 
 // HTML Elements
+const notifWord = document.getElementById("jsNotifsWord");
+const notifTimer = document.getElementById("jsNotifsTimer");
+
 const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -14,6 +18,7 @@ const initializeBtn = document.getElementById("jsInitialize");
 
 const colors = document.getElementsByClassName("jsColor");
 
+const INITIAL_TIMER = 60;
 const INITIAL_COLOR = "black";
 const INITIAL_BRUSH_SIZE = 2.5;
 const CANVAS_SIZE = 600;
@@ -32,7 +37,30 @@ ctx.lineWidth = INITIAL_BRUSH_SIZE;
 let isPainting = false;
 let isFilling = false;
 
+let currTime = 60;
+let timer = null;
+
 // Functions
+// Painter와 단어 알림
+const setNotifs = (text) => {
+  notifWord.innerText = "";
+  notifWord.innerText = text;
+};
+
+// 타이머 작동
+const startTimer = () => {
+  timer = setInterval(() => {
+    currTime -= 1;
+    notifTimer.innerText = `00:${currTime >= 10 ? currTime : `0${currTime}`}`;
+  }, 1000);
+};
+
+// 타이머 재설정
+const resetTimer = () => {
+  currTime = INITIAL_TIMER;
+  notifTimer.innerText = "01:00";
+  clearInterval(timer);
+};
 
 // 마우스가 눌려지지 않은 채 Canvas위를 배회하는 경우 처리
 const stopPainting = () => {
@@ -130,7 +158,7 @@ const handleModeClick = () => {
 };
 
 // Canvas 초기화 처리
-export const initializeCanvas = () => {
+const initializeCanvas = () => {
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 };
@@ -148,6 +176,34 @@ const handleColorClick = (event) => {
   ctx.fillStyle = color;
 };
 
+// Painter 외의 게임 참여자들은 Canvas 조작이 불가하도록 처리
+const disableCanvas = () => {
+  canvas.removeEventListener("mousemove", onMouseMove);
+  canvas.removeEventListener("mousedown", startPainting);
+  canvas.removeEventListener("mouseup", stopPainting);
+  canvas.removeEventListener("mouseleave", stopPainting);
+  canvas.removeEventListener("click", handleCanvasClick);
+};
+
+// Painter의 Canvas 조작이 가능하도록 처리
+const enableCanvas = () => {
+  canvas.addEventListener("mousemove", onMouseMove);
+  canvas.addEventListener("mousedown", startPainting);
+  canvas.addEventListener("mouseup", stopPainting);
+  canvas.addEventListener("mouseleave", stopPainting);
+  canvas.addEventListener("click", handleCanvasClick);
+};
+
+// Painter외의 게임 참여자들이 Controller를 조작 못하도록 처리
+const hideControls = () => {
+  controls.style.display = "none";
+};
+
+// Painter는 Controller를 조작할 수 있도록 처리
+const showControls = () => {
+  controls.style.display = "flex";
+};
+
 // Socket Event 처리
 // Painter가 Path를 생성하기 시작하면 다른 참여자들의 Canvas도 Path 생성
 export const handleBeganPath = ({ x, y }) => beginPath(x, y);
@@ -157,37 +213,40 @@ export const handleStrokedPath = ({ x, y, color, brushSize }) =>
   strokePath(x, y, color, brushSize);
 
 // 색 채우기 처리
-export const handleFilled = ({ color }) => fillCanvas(color);
+export const handleCanvasFilled = ({ color }) => fillCanvas(color);
 
 // 초기화 처리
-export const handleInitialized = () => initializeCanvas();
+export const handleCanvasInitialized = () => initializeCanvas();
 
-// Painter 외의 게임 참여자들은 Canvas 조작이 불가하도록 처리
-export const disableCanvas = () => {
-  canvas.removeEventListener("mousemove", onMouseMove);
-  canvas.removeEventListener("mousedown", startPainting);
-  canvas.removeEventListener("mouseup", stopPainting);
-  canvas.removeEventListener("mouseleave", stopPainting);
-  canvas.removeEventListener("click", handleCanvasClick);
+// 게임 시작 전 준비 단계 처리
+export const handleGameStarting = () => setNotifs("게임이 곧 시작됩니다.");
+
+// 게임 시작 처리
+export const handleGameStarted = ({ painter }) => {
+  setNotifs(`${painter.nickname} 님이 그림을 그립니다.`);
+  initializeCanvas();
+  disableCanvas();
+  hideControls();
+  enableChat();
+  startTimer();
 };
 
-// Painter의 Canvas 조작이 가능하도록 처리
-export const enableCanvas = () => {
-  canvas.addEventListener("mousemove", onMouseMove);
-  canvas.addEventListener("mousedown", startPainting);
-  canvas.addEventListener("mouseup", stopPainting);
-  canvas.addEventListener("mouseleave", stopPainting);
-  canvas.addEventListener("click", handleCanvasClick);
+// Painter에게 단어 전달 처리
+export const handlePainterNotif = ({ word }) => {
+  enableCanvas();
+  showControls();
+  disableChat();
+  setNotifs("");
+  setNotifs(`"${word}"에 대해 그려주세요!`);
 };
 
-// Painter외의 게임 참여자들이 Controller를 조작 못하도록 처리
-export const hideControls = () => {
-  controls.style.display = "none";
-};
-
-// Painter는 Controller를 조작할 수 있도록 처리
-export const showControls = () => {
-  controls.style.display = "flex";
+// 게임 종료 처리
+export const handleGameEnded = () => {
+  setNotifs("게임이 종료되었습니다.");
+  initializeCanvas();
+  disableCanvas();
+  hideControls();
+  resetTimer();
 };
 
 // Event Listeners

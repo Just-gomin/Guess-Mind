@@ -34,7 +34,7 @@ const socketController = (socket, io) => {
         word = chooseWord();
         superBroadcast(events.gameStarting);
         setTimeout(() => {
-          superBroadcast(events.gameStarted);
+          superBroadcast(events.gameStarted, { painter });
         }, 3000);
         setTimeout(() => {
           io.to(painter.id).emit(events.painterNotif, { word });

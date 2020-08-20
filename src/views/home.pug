@@ -11,7 +11,11 @@ html(lang="en")
                 input(placeholder="Nickname을 입력해주세요!",type="text")
         .gameContainer#jsGame
             .main
-                .notifs#jsNotifs
+                .notifs__container
+                    .notifs__word.notifs__contents Notice | 
+                        span#jsNotifsWord Let's Guess!
+                    .notifs__timer.notifs__contents Timer | 
+                        span#jsNotifsTimer 01:00
                 canvas.canvas#jsCanvas
                 .controls#jsControls
                     .controls__brushSize
